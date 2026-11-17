@@ -68,7 +68,7 @@
     .app-header h1 {
       font-size: 1.65rem;
       font-weight: 800;
-      letter-spacing: -0.5px;
+      letter-spacing: 0;
     }
 
     .app-header .subtitle {
@@ -732,7 +732,7 @@
       border: 1px solid rgba(125,211,252,0.5);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 0 22px rgba(56,189,248,0.3);
     }
-    .app-header .subtitle { letter-spacing: 0.4px; }
+    .app-header .subtitle { letter-spacing: 0; }
     .header-badge { letter-spacing: 1.2px; font-size: 0.75rem; text-transform: uppercase; }
 
     /* Cards */
@@ -746,7 +746,7 @@
       border-color: rgba(15,23,42,0.12);
       box-shadow: 0 10px 30px rgba(15,23,42,0.08), inset 0 1px 0 #fff;
     }
-    .card-header { padding: 14px 18px; font-size: 1.02rem; letter-spacing: 0.2px; }
+    .card-header { padding: 14px 18px; font-size: 1.02rem; letter-spacing: 0; }
     .card-header .icon { width: 32px; height: 32px; border-radius: 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
     .card.collapsible .card-header::after {
       content: '\25BE'; width: 28px; height: 28px; border-radius: 9px; font-size: 1rem; opacity: 1;
@@ -763,11 +763,11 @@
     }
     body.light .form-group input, body.light .form-group select,
     body.light table input, body.light .discount-control input { background: rgba(255,255,255,0.9); border-color: rgba(15,23,42,0.16); box-shadow: inset 0 1px 2px rgba(15,23,42,0.06); }
-    .form-group label { letter-spacing: 0.3px; }
+    .form-group label { letter-spacing: 0; }
 
     /* Tables */
     thead { background: linear-gradient(180deg, rgba(56,189,248,0.2), rgba(56,189,248,0.08)); }
-    th { font-size: 0.8rem; letter-spacing: 0.4px; color: #bae6fd; border-bottom: 1px solid rgba(125,211,252,0.3); }
+    th { font-size: 0.8rem; letter-spacing: 0; color: #bae6fd; border-bottom: 1px solid rgba(125,211,252,0.3); }
     body.light th { color: #075985; }
     .col-num { color: var(--muted); font-weight: 700; }
     .table-wrapper { background: rgba(0,0,0,0.12); }
@@ -800,7 +800,7 @@
       border: 1px solid rgba(255,255,255,0.24) !important;
       backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.04), 0 8px 22px rgba(0,0,0,0.28);
-      letter-spacing: 0.2px; font-weight: 700;
+      letter-spacing: 0; font-weight: 700;
       transition: transform .18s ease, box-shadow .2s ease, filter .2s ease, border-color .2s ease;
       -webkit-tap-highlight-color: transparent;
     }
@@ -1604,7 +1604,7 @@
 
       // IMPORTANT: width fixed to 794px = A4 @ 96dpi. This prevents half-page issue.
       return '' +
-'<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;direction:rtl;text-align:right;color:#000000;background:#ffffff;width:100%;max-width:100%;margin:0;box-sizing:border-box;padding:10px 10px;line-height:1.5;font-size:14px;font-weight:500;word-break:break-word;overflow-wrap:anywhere;">' +
+'<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;direction:rtl;text-align:right;color:#000000;background:#ffffff;width:100%;max-width:100%;margin:0;box-sizing:border-box;padding:10px 10px;line-height:1.5;font-size:14px;font-weight:500;word-break:break-word;overflow-wrap:anywhere;letter-spacing:0;">' +
 
   // Title
   '<div style="text-align:center;margin-bottom:5px;border-bottom:2px solid #000000;padding-bottom:4px;">' +
@@ -1645,12 +1645,12 @@
   // Items table
   '<table style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:8px;font-size:11px;">' +
     '<thead><tr style="background:#ffffff;color:#000000;">' +
-      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:6%;color:#000000;font-weight:700;">م</th>' +
-      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:38%;color:#000000;font-weight:700;">البند / وصف العطل</th>' +
-      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:14%;color:#000000;font-weight:700;">النوع</th>' +
-      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:10%;color:#000000;font-weight:700;">الكمية</th>' +
-      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:15%;color:#000000;font-weight:700;">سعر الوحدة</th>' +
-      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:17%;color:#000000;font-weight:700;">إجمالي البند</th>' +
+      '<th style="white-space:normal;text-align:center;letter-spacing:0;word-spacing:0;text-transform:none;font-size:12px;border:1px solid #000000;padding:4px 4px;width:6%;color:#000000;font-weight:700;">م</th>' +
+      '<th style="white-space:normal;text-align:center;letter-spacing:0;word-spacing:0;text-transform:none;font-size:12px;border:1px solid #000000;padding:4px 4px;width:38%;color:#000000;font-weight:700;">البنود/وصف الاعطال</th>' +
+      '<th style="white-space:normal;text-align:center;letter-spacing:0;word-spacing:0;text-transform:none;font-size:12px;border:1px solid #000000;padding:4px 4px;width:14%;color:#000000;font-weight:700;">النوع</th>' +
+      '<th style="white-space:normal;text-align:center;letter-spacing:0;word-spacing:0;text-transform:none;font-size:12px;border:1px solid #000000;padding:4px 4px;width:10%;color:#000000;font-weight:700;">الكمية</th>' +
+      '<th style="white-space:normal;text-align:center;letter-spacing:0;word-spacing:0;text-transform:none;font-size:12px;border:1px solid #000000;padding:4px 4px;width:15%;color:#000000;font-weight:700;">سعر الوحدة</th>' +
+      '<th style="white-space:normal;text-align:center;letter-spacing:0;word-spacing:0;text-transform:none;font-size:12px;border:1px solid #000000;padding:4px 4px;width:17%;color:#000000;font-weight:700;">اجمالي البند</th>' +
     '</tr></thead>' +
     '<tbody>' + tableRows + '</tbody>' +
   '</table>' +
