@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مقايسة إصلاح وصيانة سيارات | نظام عرض السعر</title>
+  <!-- html2pdf loads only when needed (saves memory on weak phones) -->
+  <style>
+    :root {
+      --primary: #0b1220;
+      --primary-light: #152238;
+      --accent: #38bdf8;
+      --accent-dark: #0ea5e9;
+      --success: #34d399;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --border: rgba(255,255,255,0.12);
+      --bg: #0b1220;
+      --card: rgba(255,255,255,0.06);
+      --text: #e8eef7;
+      --muted: #94a3b8;
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.25);
+      --shadow-lg: 0 16px 48px rgba(0,0,0,0.35);
+      --glass: rgba(255,255,255,0.07);
+      --glass-border: rgba(255,255,255,0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+      background: linear-gradient(145deg, #0b1220 0%, #111827 40%, #0f2744 100%);
+      background-attachment: fixed;
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 14px;
+    }
+
+    .app-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .app-header {
+      background: linear-gradient(135deg, rgba(15,39,70,0.85), rgba(14,165,233,0.15));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      color: white;
+      padding: 22px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .app-header h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .app-header .subtitle {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    .header-badge {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #7dd3fc;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      background: linear-gradient(90deg, rgba(14,165,233,0.2), rgba(15,23,42,0.4));
+      color: white;
+      padding: 13px 18px;
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .card-header .icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(14, 165, 233, 0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+
+
+    /* Collapsible cards */
+    .card.collapsible .card-header { cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+    .card.collapsible .card-header::after { content: '▾'; margin-inline-start: auto; font-size: 1.1rem; opacity: 0.8; transition: transform 0.2s; }
+    .card.collapsible:not(.open) .card-header::after { transform: rotate(90deg); }
+    .card.collapsible:not(.open) .card-body { display: none; }
+    @media print { .card.collapsible .card-body { display: block !important; } }
+
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 20px;
+    }
+
+    @media (max-width: 700px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 11px 14px;
+      border: 1.5px solid var(--glass-border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .form-group input::placeholder {
+      color: #64748b;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--glass-border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    thead {
+      background: rgba(14,165,233,0.15);
+    }
+
+    th {
+      padding: 12px 10px;
+      text-align: right;
+      font-weight: 700;
+      color: #e2e8f0;
+      border-bottom: 1px solid var(--glass-border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      vertical-align: middle;
+      color: #e2e8f0;
+    }
+
+    tbody tr:hover {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .col-num { width: 50px; text-align: center; }
+    .col-desc { min-width: 220px; }
+    .col-qty { width: 90px; }
+    .col-price { width: 120px; }
+    .col-total { width: 120px; text-align: left; font-weight: 600; }
+    .col-actions { width: 50px; text-align: center; }
+
+    table input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.06);
+      color: #e2e8f0;
+    }
+
+    table input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .btn-remove {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 1.15rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn-remove:hover {
+      background: #fef2f2;
+    }
+
+    .btn-add {
+      background: rgba(14,165,233,0.12);
+      color: #7dd3fc;
+      border: 1.5px dashed rgba(125,211,252,0.5);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-add:hover {
+      background: rgba(14,165,233,0.22);
+      border-color: var(--accent);
+    }
+
+    /* Section Summary */
+    .section-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px dashed #cbd5e1;
+    }
+
+    .summary-item {
+      background: rgba(255,255,255,0.06);
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .summary-item .label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .summary-item .value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .summary-item.discount .value { color: #f87171; }
+    .summary-item.net .value { color: #34d399; }
+
+    .discount-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .discount-control label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .discount-control input {
+      width: 90px;
+      padding: 9px 12px;
+      border: 1.5px solid var(--glass-border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      text-align: center;
+      background: rgba(255,255,255,0.06);
+      color: #e2e8f0;
+    }
+
+    /* Grand Total */
+    .grand-total-card {
+      background: linear-gradient(135deg, rgba(14,165,233,0.2), rgba(15,23,42,0.7));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      color: white;
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .grand-total-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      opacity: 0.9;
+      font-weight: 600;
+    }
+
+    .grand-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .grand-item {
+      background: rgba(255,255,255,0.06);
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .grand-item .label {
+      font-size: 0.82rem;
+      opacity: 0.8;
+      margin-bottom: 4px;
+    }
+
+    .grand-item .value {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .grand-final {
+      grid-column: 1 / -1;
+      background: rgba(14, 165, 233, 0.2);
+      border: 1px solid rgba(14, 165, 233, 0.4);
+      text-align: center;
+      padding: 18px;
+    }
+
+    .grand-final .label {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .grand-final .value {
+      font-size: 1.8rem;
+      color: #7dd3fc;
+    }
+
+    /* Terms */
+    .terms-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .terms-list li {
+      padding: 10px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 0.92rem;
+      color: #334155;
+      display: flex;
+      gap: 10px;
+    }
+
+    .terms-list li:last-child {
+      border-bottom: none;
+    }
+
+    .terms-list li::before {
+      content: "•";
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    /* Signatures */
+    .signatures {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 30px;
+      padding-top: 20px;
+    }
+
+    .sig-box {
+      text-align: center;
+    }
+
+    .sig-line {
+      border-bottom: 1.5px solid #94a3b8;
+      height: 50px;
+      margin-bottom: 8px;
+    }
+
+    .sig-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* Actions */
+    .actions-bar {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 30px 0 40px;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white;
+      box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #e2e8f0;
+      border: 1.5px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.14);
+    }
+
+    .btn-whatsapp {
+      background: #25D366;
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      background: #128C7E;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* PDF specific styles */
+    #pdf-content {
+      display: none;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .app-header, .actions-bar, .btn-add, .btn-remove, .discount-control input,
+      table input, .card-header .icon { /* hide interactive */ }
+    }
+
+    /* Utility */
+    .text-left { text-align: left !important; }
+    .fw-bold { font-weight: 700; }
+    .mt-2 { margin-top: 8px; }
+
+
+    /* ===== Section colors (#7) ===== */
+    .card.sec-parts { --sec: #38bdf8; --sec-bg: rgba(56,189,248,0.24); }
+    .card.sec-oils  { --sec: #eab308; --sec-bg: rgba(234,179,8,0.26); }
+    .card.sec-labor { --sec: #10b981; --sec-bg: rgba(16,185,129,0.26); }
+    .card.sec-parts, .card.sec-oils, .card.sec-labor { border-right: 6px solid var(--sec); }
+    .card.sec-parts .card-header, .card.sec-oils .card-header, .card.sec-labor .card-header {
+      background: linear-gradient(90deg, var(--sec-bg), rgba(15,23,42,0.25));
+    }
+    .card.sec-parts .card-header .icon, .card.sec-oils .card-header .icon, .card.sec-labor .card-header .icon {
+      background: var(--sec-bg); border: 1px solid var(--sec);
+    }
+    .hd-text { flex: 1; min-width: 0; }
+    .sec-meta { display: block; font-size: 0.8rem; font-weight: 600; opacity: 0.9; margin-top: 1px; color: var(--sec); }
+
+
+    /* Saved estimates: distinct purple */
+    .card.sec-saved { --sec: #f97316; --sec-bg: rgba(249,115,22,0.28); border-right: 6px solid var(--sec); }
+    .card.sec-saved .card-header { background: linear-gradient(90deg, var(--sec-bg), rgba(15,23,42,0.25)); }
+    .card.sec-saved .card-header .icon { background: var(--sec-bg); border: 1px solid var(--sec); }
+    body.light .card.sec-saved { --sec: #ea580c; --sec-bg: rgba(234,88,12,0.18); }
+    body.light .card.sec-saved .card-header { background: linear-gradient(90deg, var(--sec-bg), #ffffff); }
+
+    /* ===== Sticky total bar (#6) ===== */
+    .app-container { padding-bottom: 70px; }
+    #sticky-total {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 10px 18px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: rgba(11,18,32,0.94);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -6px 24px rgba(0,0,0,0.3);
+      color: var(--text); font-weight: 700; cursor: pointer;
+    }
+    #sticky-total .st-label { font-size: 0.9rem; opacity: 0.85; }
+    #sticky-total .st-value { font-size: 1.15rem; color: #7dd3fc; }
+    body:not(.unlocked) #sticky-total { display: none; }
+    @media print { #sticky-total, .theme-toggle { display: none !important; } }
+
+    /* ===== Theme toggle + Light mode (#12) ===== */
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.15rem;
+      background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: inherit;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    body.light {
+      --text: #0f172a; --muted: #475569;
+      --glass: rgba(255,255,255,0.9); --glass-border: rgba(15,23,42,0.16);
+      --shadow: 0 6px 20px rgba(15,23,42,0.08);
+      background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 100%);
+      color: #0f172a;
+    }
+    body.light .app-header { background: linear-gradient(135deg, #e0f2fe, #f8fafc); color: #0f172a; }
+    body.light .header-badge { background: #e0f2fe; border-color: #7dd3fc; color: #0369a1; }
+    body.light .theme-toggle { background: #fff; }
+    body.light .card-header { background: linear-gradient(90deg, #e0f2fe, #f8fafc); color: #0f172a; }
+    body.light .card-header .icon { background: #bae6fd; }
+    body.light .card.sec-parts .card-header, body.light .card.sec-oils .card-header, body.light .card.sec-labor .card-header {
+      background: linear-gradient(90deg, var(--sec-bg), #ffffff);
+    }
+    body.light .sec-meta { color: #0f172a; }
+    body.light .form-group label { color: #475569; }
+    body.light .form-group input, body.light .form-group select,
+    body.light table input, body.light .discount-control input { background: #fff; color: #0f172a; }
+    body.light .form-group input::placeholder { color: #94a3b8; }
+    body.light th, body.light td { color: #0f172a; }
+    body.light td { border-bottom-color: rgba(15,23,42,0.08); }
+    body.light tbody tr:hover { background: rgba(15,23,42,0.04); }
+    body.light .summary-item { background: #f8fafc; }
+    body.light .summary-item .value { color: #0f172a; }
+    body.light .summary-item.discount .value { color: #dc2626; }
+    body.light .summary-item.net .value { color: #059669; }
+    body.light .btn-add { background: #e0f2fe; color: #0369a1; border-color: #38bdf8; }
+    body.light .btn-secondary { background: #fff; color: #0f172a; }
+    body.light .grand-total-card { background: linear-gradient(135deg, #e0f2fe, #f8fafc); color: #0f172a; }
+    body.light .grand-item { background: #fff; }
+    body.light .grand-final { background: #bae6fd; border-color: #38bdf8; }
+    body.light .grand-final .value { color: #0369a1; }
+    body.light .sig-line { border-bottom-color: #64748b; }
+    body.light #sticky-total { background: rgba(255,255,255,0.96); box-shadow: 0 -6px 24px rgba(15,23,42,0.12); }
+    body.light #sticky-total .st-value { color: #0369a1; }
+
+    /* Login Screen */
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      background: linear-gradient(145deg, #0b1220 0%, #111827 40%, #0f2744 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #login-screen .login-box {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 20px;
+      padding: 36px 28px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    #login-screen h2 {
+      font-size: 1.35rem;
+      margin-bottom: 6px;
+      color: #e8eef7;
+    }
+    #login-screen p {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 22px;
+    }
+    #login-screen input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid rgba(255,255,255,0.14);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      color: #e8eef7;
+      font-size: 1.2rem;
+      text-align: center;
+      letter-spacing: 8px;
+      font-family: inherit;
+      margin-bottom: 16px;
+    }
+    #login-screen input:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56,189,248,0.2);
+    }
+    #login-screen button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+    }
+    #login-error {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      display: none;
+    }
+    .app-container { display: none; }
+    body.unlocked .app-container { display: block; }
+    body.unlocked #login-screen { display: none; }
+
+
+    /* =====================================================
+       PREMIUM ENGINEERING GLASS THEME
+       ===================================================== */
+    html { scroll-behavior: smooth; }
+    body { font-feature-settings: "tnum"; -webkit-font-smoothing: antialiased; }
+
+    /* Blueprint grid + ambient glow */
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background-image:
+        radial-gradient(900px 520px at 90% -8%, rgba(56,189,248,0.18), transparent 60%),
+        radial-gradient(760px 520px at -5% 105%, rgba(249,115,22,0.15), transparent 60%),
+        linear-gradient(rgba(148,163,184,0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,0.055) 1px, transparent 1px);
+      background-size: auto, auto, 34px 34px, 34px 34px;
+    }
+    body.light::before {
+      background-image:
+        radial-gradient(900px 520px at 90% -8%, rgba(56,189,248,0.22), transparent 60%),
+        radial-gradient(760px 520px at -5% 105%, rgba(249,115,22,0.12), transparent 60%),
+        linear-gradient(rgba(15,23,42,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,23,42,0.05) 1px, transparent 1px);
+    }
+    @media print { body::before { display: none; } }
+
+    /* Scrollbars */
+    * { scrollbar-width: thin; scrollbar-color: rgba(148,163,184,0.45) transparent; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.4); border-radius: 8px; }
+
+    /* Header */
+    .app-header { position: relative; overflow: hidden; padding: 20px 20px; border-color: rgba(125,211,252,0.28); }
+    .app-header::before {
+      content: ''; position: absolute; inset: 0 0 auto 0; height: 2px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #f97316, transparent);
+    }
+    .app-header h1 { display: flex; align-items: center; gap: 12px; font-size: 1.5rem; letter-spacing: 0; }
+    .app-header h1::before {
+      content: '\2699\FE0E'; flex: none; width: 44px; height: 44px; border-radius: 14px;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #7dd3fc;
+      background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.03)), rgba(14,165,233,0.2);
+      border: 1px solid rgba(125,211,252,0.5);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 0 22px rgba(56,189,248,0.3);
+    }
+    .app-header .subtitle { letter-spacing: 0.4px; }
+    .header-badge { letter-spacing: 1.2px; font-size: 0.75rem; text-transform: uppercase; }
+
+    /* Cards */
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.095), rgba(255,255,255,0.035));
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    body.light .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.75));
+      border-color: rgba(15,23,42,0.12);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.08), inset 0 1px 0 #fff;
+    }
+    .card-header { padding: 14px 18px; font-size: 1.02rem; letter-spacing: 0.2px; }
+    .card-header .icon { width: 32px; height: 32px; border-radius: 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
+    .card.collapsible .card-header::after {
+      content: '\25BE'; width: 28px; height: 28px; border-radius: 9px; font-size: 1rem; opacity: 1;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+    }
+    body.light .card.collapsible .card-header::after { background: #fff; border-color: rgba(15,23,42,0.15); }
+
+    /* Fields */
+    .form-group input, .form-group select, table input, .discount-control input, #login-screen input {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.18);
+    }
+    body.light .form-group input, body.light .form-group select,
+    body.light table input, body.light .discount-control input { background: rgba(255,255,255,0.9); border-color: rgba(15,23,42,0.16); box-shadow: inset 0 1px 2px rgba(15,23,42,0.06); }
+    .form-group label { letter-spacing: 0.3px; }
+
+    /* Tables */
+    thead { background: linear-gradient(180deg, rgba(56,189,248,0.2), rgba(56,189,248,0.08)); }
+    th { font-size: 0.8rem; letter-spacing: 0.4px; color: #bae6fd; border-bottom: 1px solid rgba(125,211,252,0.3); }
+    body.light th { color: #075985; }
+    .col-num { color: var(--muted); font-weight: 700; }
+    .table-wrapper { background: rgba(0,0,0,0.12); }
+    body.light .table-wrapper { background: rgba(255,255,255,0.6); }
+    tbody tr:nth-child(even) { background: rgba(255,255,255,0.025); }
+    body.light tbody tr:nth-child(even) { background: rgba(15,23,42,0.025); }
+
+    /* Summary tiles */
+    .summary-item, .grand-item {
+      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    body.light .summary-item, body.light .grand-item { background: linear-gradient(180deg, #fff, #f1f5f9); box-shadow: inset 0 1px 0 #fff; }
+    .grand-total-card { border-color: rgba(125,211,252,0.3); }
+    .grand-final { box-shadow: 0 0 40px rgba(14,165,233,0.2), inset 0 1px 0 rgba(255,255,255,0.2); }
+    .grand-final .value {
+      font-size: 2rem; letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #7dd3fc, #f0f9ff 50%, #7dd3fc);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+    }
+    body.light .grand-final .value { background: none; -webkit-text-fill-color: #0369a1; color: #0369a1; }
+
+    /* =====================================================
+       GLASS BUTTONS
+       ===================================================== */
+    .btn, .btn-add, .theme-toggle, #login-screen button {
+      --sheen: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0) 55%);
+      background: var(--sheen), rgba(255,255,255,0.07);
+      color: #eaf6ff; text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.24) !important;
+      backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.04), 0 8px 22px rgba(0,0,0,0.28);
+      letter-spacing: 0.2px; font-weight: 700;
+      transition: transform .18s ease, box-shadow .2s ease, filter .2s ease, border-color .2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:hover, .btn-add:hover, .theme-toggle:hover, #login-screen button:hover {
+      transform: translateY(-2px); filter: brightness(1.14);
+    }
+    .btn:active, .btn-add:active, .theme-toggle:active, #login-screen button:active { transform: translateY(0) scale(0.98); }
+    .btn:disabled { filter: grayscale(0.4); }
+
+    .btn-primary, #login-screen button {
+      background: var(--sheen), linear-gradient(135deg, rgba(14,165,233,0.55), rgba(2,132,199,0.3));
+      border-color: rgba(125,211,252,0.6) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.38), 0 8px 28px rgba(14,165,233,0.4);
+      color: #f0f9ff;
+    }
+    .btn-whatsapp {
+      background: var(--sheen), linear-gradient(135deg, rgba(16,185,129,0.55), rgba(5,150,105,0.3));
+      border-color: rgba(110,231,183,0.6) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.38), 0 8px 28px rgba(16,185,129,0.35);
+      color: #ecfdf5;
+    }
+    .btn-secondary { background: var(--sheen), rgba(255,255,255,0.08); color: #e8eef7; }
+    .btn-add {
+      background: var(--sheen), rgba(56,189,248,0.14); color: #bae6fd; border-radius: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 18px rgba(14,165,233,0.2);
+    }
+    .theme-toggle { box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 6px 18px rgba(0,0,0,0.25); }
+
+    /* delete (x) buttons */
+    .btn-remove {
+      width: 30px; height: 30px; padding: 0; border-radius: 50%; line-height: 1;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0) 60%), rgba(248,113,113,0.12);
+      border: 1px solid rgba(248,113,113,0.4); color: #fca5a5;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-remove:hover { background: rgba(248,113,113,0.25); box-shadow: 0 0 16px rgba(248,113,113,0.45); transform: scale(1.08); }
+
+    /* Light-mode glass buttons */
+    body.light .btn, body.light .btn-add, body.light .theme-toggle {
+      --sheen: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0) 60%);
+      color: #0c4a6e; text-shadow: none;
+      border-color: rgba(15,23,42,0.16) !important;
+      box-shadow: inset 0 1px 0 #fff, 0 6px 16px rgba(15,23,42,0.1);
+    }
+    body.light .btn-primary { background: var(--sheen), linear-gradient(135deg, rgba(14,165,233,0.38), rgba(56,189,248,0.2)); border-color: rgba(2,132,199,0.5) !important; color: #075985; box-shadow: inset 0 1px 0 #fff, 0 8px 22px rgba(14,165,233,0.25); }
+    body.light .btn-whatsapp { background: var(--sheen), linear-gradient(135deg, rgba(16,185,129,0.38), rgba(52,211,153,0.2)); border-color: rgba(5,150,105,0.5) !important; color: #065f46; box-shadow: inset 0 1px 0 #fff, 0 8px 22px rgba(16,185,129,0.22); }
+    body.light .btn-secondary { background: var(--sheen), rgba(255,255,255,0.7); color: #0f172a; }
+    body.light .btn-add { background: var(--sheen), rgba(56,189,248,0.2); color: #075985; }
+    body.light .btn-remove { color: #dc2626; background: linear-gradient(180deg, #fff, rgba(255,255,255,0) 60%), rgba(248,113,113,0.14); }
+
+    /* =====================================================
+       SAVED ESTIMATES: standout purple glass
+       ===================================================== */
+    .card.sec-saved {
+      border-color: rgba(253,186,116,0.55);
+      box-shadow: 0 14px 46px rgba(234,88,12,0.32), 0 0 0 1px rgba(249,115,22,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    .card.sec-saved .card-header {
+      background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0) 60%),
+                  linear-gradient(135deg, rgba(249,115,22,0.55), rgba(251,146,60,0.22));
+      border-bottom-color: rgba(253,186,116,0.4);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    .card.sec-saved .card-header .icon {
+      background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.05)), rgba(249,115,22,0.45);
+      border: 1px solid rgba(254,215,170,0.7);
+      animation: savedGlow 2.6s ease-in-out infinite;
+    }
+    .card.sec-saved .sec-meta { color: #fed7aa; }
+    .card.sec-saved .btn-add {
+      background: var(--sheen), linear-gradient(135deg, rgba(249,115,22,0.5), rgba(251,146,60,0.25));
+      border-color: rgba(253,186,116,0.7) !important; color: #fff7ed;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 8px 26px rgba(249,115,22,0.4);
+    }
+    body.light .card.sec-saved .card-header { background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0) 60%), linear-gradient(135deg, rgba(249,115,22,0.35), rgba(255,255,255,0.8)); text-shadow: none; }
+    body.light .card.sec-saved .sec-meta { color: #9a3412; }
+    body.light .card.sec-saved .btn-add { background: var(--sheen), linear-gradient(135deg, rgba(249,115,22,0.35), rgba(253,186,116,0.2)); color: #7c2d12; }
+    @keyframes savedGlow {
+      0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 0 6px rgba(249,115,22,0.4); }
+      50%      { box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 0 22px rgba(249,115,22,0.9); }
+    }
+    @media (prefers-reduced-motion: reduce) { .card.sec-saved .card-header .icon { animation: none; } .btn, .btn-add { transition: none; } }
+
+    /* Sticky total bar + login */
+    #sticky-total { border-top: 1px solid rgba(125,211,252,0.3); background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0)), rgba(11,18,32,0.82); }
+    body.light #sticky-total { background: linear-gradient(180deg, #fff, rgba(255,255,255,0.8)); }
+    #sticky-total .st-value { font-size: 1.25rem; text-shadow: 0 0 18px rgba(56,189,248,0.5); }
+    #login-screen { background-image: linear-gradient(rgba(148,163,184,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.06) 1px, transparent 1px), linear-gradient(145deg, #0b1220 0%, #111827 40%, #0f2744 100%); background-size: 34px 34px, 34px 34px, auto; }
+    #login-screen .login-box { border-color: rgba(125,211,252,0.3); box-shadow: 0 24px 70px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15); }
+
+    body.light .app-header h1::before { color: #0369a1; background: linear-gradient(180deg, #fff, rgba(255,255,255,0.3)), rgba(14,165,233,0.25); border-color: rgba(2,132,199,0.5); box-shadow: inset 0 1px 0 #fff, 0 6px 16px rgba(14,165,233,0.25); }
+
+    /* =====================================================
+       MECHANICAL ENGINEERING BACKGROUND + DETAILS
+       ===================================================== */
+    body::before {
+      background-image:
+        url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20520%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%237dd3fc%22%20stroke-opacity%3D%220.34%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M428.5%2C237.2%20L459.4%2C244.8%20L459.4%2C275.2%20L428.5%2C282.8%20L421.7%2C312.5%20L446.3%2C332.8%20L433.1%2C360.3%20L401.9%2C353.7%20L382.9%2C377.5%20L396.3%2C406.4%20L372.4%2C425.4%20L347.2%2C405.9%20L319.7%2C419.2%20L319.2%2C451.0%20L289.5%2C457.8%20L275.2%2C429.3%20L244.8%2C429.3%20L230.5%2C457.8%20L200.8%2C451.0%20L200.3%2C419.2%20L172.8%2C405.9%20L147.6%2C425.4%20L123.7%2C406.4%20L137.1%2C377.5%20L118.1%2C353.7%20L86.9%2C360.3%20L73.7%2C332.8%20L98.3%2C312.5%20L91.5%2C282.8%20L60.6%2C275.2%20L60.6%2C244.8%20L91.5%2C237.2%20L98.3%2C207.5%20L73.7%2C187.2%20L86.9%2C159.7%20L118.1%2C166.3%20L137.1%2C142.5%20L123.7%2C113.6%20L147.6%2C94.6%20L172.8%2C114.1%20L200.3%2C100.8%20L200.8%2C69.0%20L230.5%2C62.2%20L244.8%2C90.7%20L275.2%2C90.7%20L289.5%2C62.2%20L319.2%2C69.0%20L319.7%2C100.8%20L347.2%2C114.1%20L372.4%2C94.6%20L396.3%2C113.6%20L382.9%2C142.5%20L401.9%2C166.3%20L433.1%2C159.7%20L446.3%2C187.2%20L421.7%2C207.5Z%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%22132.6%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2230.4%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2216%22%2F%3E%3Ccircle%20cx%3D%22336.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22298.2%22%20cy%3D%22326.3%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22221.8%22%20cy%3D%22326.3%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22183.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22221.7%22%20cy%3D%22193.7%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22298.2%22%20cy%3D%22193.7%22%20r%3D%2223.8%22%2F%3E%3Cg%20stroke-dasharray%3D%2222%205%204%205%22%20stroke-width%3D%221.2%22%3E%3Cline%20x1%3D%2210.0%22%20y1%3D%22260.0%22%20x2%3D%22510.0%22%20y2%3D%22260.0%22%2F%3E%3Cline%20x1%3D%22260.0%22%20y1%3D%2210.0%22%20x2%3D%22260.0%22%20y2%3D%22510.0%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20520%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%237dd3fc%22%20stroke-opacity%3D%220.28%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M427.0%2C228.1%20L458.9%2C238.7%20L458.9%2C281.3%20L427.0%2C291.9%20L413.8%2C332.4%20L433.4%2C359.6%20L408.3%2C394.1%20L376.4%2C383.9%20L341.9%2C409.0%20L341.7%2C442.5%20L301.2%2C455.7%20L281.3%2C428.7%20L238.7%2C428.7%20L218.8%2C455.7%20L178.3%2C442.5%20L178.1%2C409.0%20L143.6%2C383.9%20L111.7%2C394.1%20L86.6%2C359.6%20L106.2%2C332.4%20L93.0%2C291.9%20L61.1%2C281.3%20L61.1%2C238.7%20L93.0%2C228.1%20L106.2%2C187.6%20L86.6%2C160.4%20L111.7%2C125.9%20L143.6%2C136.1%20L178.1%2C111.0%20L178.3%2C77.5%20L218.8%2C64.3%20L238.7%2C91.3%20L281.3%2C91.3%20L301.2%2C64.3%20L341.7%2C77.5%20L341.9%2C111.0%20L376.4%2C136.1%20L408.3%2C125.9%20L433.4%2C160.4%20L413.8%2C187.6Z%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%22132.6%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2230.4%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2216%22%2F%3E%3Ccircle%20cx%3D%22336.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22283.6%22%20cy%3D%22332.8%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22198.1%22%20cy%3D%22305.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22198.1%22%20cy%3D%22215.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22283.6%22%20cy%3D%22187.2%22%20r%3D%2223.8%22%2F%3E%3Cg%20stroke-dasharray%3D%2222%205%204%205%22%20stroke-width%3D%221.2%22%3E%3Cline%20x1%3D%2210.0%22%20y1%3D%22260.0%22%20x2%3D%22510.0%22%20y2%3D%22260.0%22%2F%3E%3Cline%20x1%3D%22260.0%22%20y1%3D%2210.0%22%20x2%3D%22260.0%22%20y2%3D%22510.0%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20520%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23fdba74%22%20stroke-opacity%3D%220.28%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M425.3%2C220.3%20L458.2%2C233.4%20L458.2%2C286.6%20L425.3%2C299.7%20L404.9%2C348.8%20L419.0%2C381.3%20L381.3%2C419.0%20L348.8%2C404.9%20L299.7%2C425.3%20L286.6%2C458.2%20L233.4%2C458.2%20L220.3%2C425.3%20L171.2%2C404.9%20L138.7%2C419.0%20L101.0%2C381.3%20L115.1%2C348.8%20L94.7%2C299.7%20L61.8%2C286.6%20L61.8%2C233.4%20L94.7%2C220.3%20L115.1%2C171.2%20L101.0%2C138.7%20L138.7%2C101.0%20L171.2%2C115.1%20L220.3%2C94.7%20L233.4%2C61.8%20L286.6%2C61.8%20L299.7%2C94.7%20L348.8%2C115.1%20L381.3%2C101.0%20L419.0%2C138.7%20L404.9%2C171.2Z%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%22132.6%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2230.4%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2216%22%2F%3E%3Ccircle%20cx%3D%22336.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22336.5%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22183.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22183.5%22%20r%3D%2223.8%22%2F%3E%3Cg%20stroke-dasharray%3D%2222%205%204%205%22%20stroke-width%3D%221.2%22%3E%3Cline%20x1%3D%2210.0%22%20y1%3D%22260.0%22%20x2%3D%22510.0%22%20y2%3D%22260.0%22%2F%3E%3Cline%20x1%3D%22260.0%22%20y1%3D%2210.0%22%20x2%3D%22260.0%22%20y2%3D%22510.0%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"),
+        radial-gradient(900px 520px at 90% -8%, rgba(56,189,248,0.16), transparent 60%),
+        radial-gradient(760px 520px at -5% 105%, rgba(249,115,22,0.10), transparent 60%),
+        linear-gradient(rgba(148,163,184,0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,0.10) 1px, transparent 1px),
+        linear-gradient(rgba(148,163,184,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,0.045) 1px, transparent 1px);
+      background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat, repeat, repeat;
+      background-position: right -150px top -130px, left -130px bottom -120px, right -60px bottom 18%, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+      background-size: 470px 470px, 400px 400px, 250px 250px, auto, auto, 170px 170px, 170px 170px, 34px 34px, 34px 34px;
+    }
+    body.light::before {
+      background-image:
+        url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20520%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%230f172a%22%20stroke-opacity%3D%220.22%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M428.5%2C237.2%20L459.4%2C244.8%20L459.4%2C275.2%20L428.5%2C282.8%20L421.7%2C312.5%20L446.3%2C332.8%20L433.1%2C360.3%20L401.9%2C353.7%20L382.9%2C377.5%20L396.3%2C406.4%20L372.4%2C425.4%20L347.2%2C405.9%20L319.7%2C419.2%20L319.2%2C451.0%20L289.5%2C457.8%20L275.2%2C429.3%20L244.8%2C429.3%20L230.5%2C457.8%20L200.8%2C451.0%20L200.3%2C419.2%20L172.8%2C405.9%20L147.6%2C425.4%20L123.7%2C406.4%20L137.1%2C377.5%20L118.1%2C353.7%20L86.9%2C360.3%20L73.7%2C332.8%20L98.3%2C312.5%20L91.5%2C282.8%20L60.6%2C275.2%20L60.6%2C244.8%20L91.5%2C237.2%20L98.3%2C207.5%20L73.7%2C187.2%20L86.9%2C159.7%20L118.1%2C166.3%20L137.1%2C142.5%20L123.7%2C113.6%20L147.6%2C94.6%20L172.8%2C114.1%20L200.3%2C100.8%20L200.8%2C69.0%20L230.5%2C62.2%20L244.8%2C90.7%20L275.2%2C90.7%20L289.5%2C62.2%20L319.2%2C69.0%20L319.7%2C100.8%20L347.2%2C114.1%20L372.4%2C94.6%20L396.3%2C113.6%20L382.9%2C142.5%20L401.9%2C166.3%20L433.1%2C159.7%20L446.3%2C187.2%20L421.7%2C207.5Z%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%22132.6%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2230.4%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2216%22%2F%3E%3Ccircle%20cx%3D%22336.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22298.2%22%20cy%3D%22326.3%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22221.8%22%20cy%3D%22326.3%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22183.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22221.7%22%20cy%3D%22193.7%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22298.2%22%20cy%3D%22193.7%22%20r%3D%2223.8%22%2F%3E%3Cg%20stroke-dasharray%3D%2222%205%204%205%22%20stroke-width%3D%221.2%22%3E%3Cline%20x1%3D%2210.0%22%20y1%3D%22260.0%22%20x2%3D%22510.0%22%20y2%3D%22260.0%22%2F%3E%3Cline%20x1%3D%22260.0%22%20y1%3D%2210.0%22%20x2%3D%22260.0%22%20y2%3D%22510.0%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20520%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%230f172a%22%20stroke-opacity%3D%220.2%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M427.0%2C228.1%20L458.9%2C238.7%20L458.9%2C281.3%20L427.0%2C291.9%20L413.8%2C332.4%20L433.4%2C359.6%20L408.3%2C394.1%20L376.4%2C383.9%20L341.9%2C409.0%20L341.7%2C442.5%20L301.2%2C455.7%20L281.3%2C428.7%20L238.7%2C428.7%20L218.8%2C455.7%20L178.3%2C442.5%20L178.1%2C409.0%20L143.6%2C383.9%20L111.7%2C394.1%20L86.6%2C359.6%20L106.2%2C332.4%20L93.0%2C291.9%20L61.1%2C281.3%20L61.1%2C238.7%20L93.0%2C228.1%20L106.2%2C187.6%20L86.6%2C160.4%20L111.7%2C125.9%20L143.6%2C136.1%20L178.1%2C111.0%20L178.3%2C77.5%20L218.8%2C64.3%20L238.7%2C91.3%20L281.3%2C91.3%20L301.2%2C64.3%20L341.7%2C77.5%20L341.9%2C111.0%20L376.4%2C136.1%20L408.3%2C125.9%20L433.4%2C160.4%20L413.8%2C187.6Z%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%22132.6%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2230.4%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2216%22%2F%3E%3Ccircle%20cx%3D%22336.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22283.6%22%20cy%3D%22332.8%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22198.1%22%20cy%3D%22305.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22198.1%22%20cy%3D%22215.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22283.6%22%20cy%3D%22187.2%22%20r%3D%2223.8%22%2F%3E%3Cg%20stroke-dasharray%3D%2222%205%204%205%22%20stroke-width%3D%221.2%22%3E%3Cline%20x1%3D%2210.0%22%20y1%3D%22260.0%22%20x2%3D%22510.0%22%20y2%3D%22260.0%22%2F%3E%3Cline%20x1%3D%22260.0%22%20y1%3D%2210.0%22%20x2%3D%22260.0%22%20y2%3D%22510.0%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20520%20520%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%239a3412%22%20stroke-opacity%3D%220.26%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M425.3%2C220.3%20L458.2%2C233.4%20L458.2%2C286.6%20L425.3%2C299.7%20L404.9%2C348.8%20L419.0%2C381.3%20L381.3%2C419.0%20L348.8%2C404.9%20L299.7%2C425.3%20L286.6%2C458.2%20L233.4%2C458.2%20L220.3%2C425.3%20L171.2%2C404.9%20L138.7%2C419.0%20L101.0%2C381.3%20L115.1%2C348.8%20L94.7%2C299.7%20L61.8%2C286.6%20L61.8%2C233.4%20L94.7%2C220.3%20L115.1%2C171.2%20L101.0%2C138.7%20L138.7%2C101.0%20L171.2%2C115.1%20L220.3%2C94.7%20L233.4%2C61.8%20L286.6%2C61.8%20L299.7%2C94.7%20L348.8%2C115.1%20L381.3%2C101.0%20L419.0%2C138.7%20L404.9%2C171.2Z%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%22132.6%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2230.4%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22260.0%22%20r%3D%2216%22%2F%3E%3Ccircle%20cx%3D%22336.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22336.5%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22183.5%22%20cy%3D%22260.0%22%20r%3D%2223.8%22%2F%3E%3Ccircle%20cx%3D%22260.0%22%20cy%3D%22183.5%22%20r%3D%2223.8%22%2F%3E%3Cg%20stroke-dasharray%3D%2222%205%204%205%22%20stroke-width%3D%221.2%22%3E%3Cline%20x1%3D%2210.0%22%20y1%3D%22260.0%22%20x2%3D%22510.0%22%20y2%3D%22260.0%22%2F%3E%3Cline%20x1%3D%22260.0%22%20y1%3D%2210.0%22%20x2%3D%22260.0%22%20y2%3D%22510.0%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"),
+        radial-gradient(900px 520px at 90% -8%, rgba(56,189,248,0.20), transparent 60%),
+        radial-gradient(760px 520px at -5% 105%, rgba(249,115,22,0.10), transparent 60%),
+        linear-gradient(rgba(15,23,42,0.075) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,23,42,0.075) 1px, transparent 1px),
+        linear-gradient(rgba(15,23,42,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,23,42,0.035) 1px, transparent 1px);
+    }
+    .app-header::before { background: linear-gradient(90deg, transparent, #38bdf8, #f97316, transparent); }
+    /* technical hatch strip at the bottom of the header */
+    .app-header::after {
+      content: ''; position: absolute; inset: auto 0 0 0; height: 6px; pointer-events: none;
+      background: repeating-linear-gradient(135deg, rgba(125,211,252,0.28) 0 2px, transparent 2px 8px);
+    }
+    body.light .app-header::after { background: repeating-linear-gradient(135deg, rgba(2,132,199,0.3) 0 2px, transparent 2px 8px); }
+    /* corner screws on every card */
+    .card { position: relative; }
+    .card::before {
+      content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      --sc: radial-gradient(circle, rgba(226,232,240,0.9) 0 1.3px, rgba(148,163,184,0.45) 1.8px 3.6px, transparent 4.2px);
+      background:
+        var(--sc) 6px 6px / 10px 10px no-repeat,
+        var(--sc) calc(100% - 6px) 6px / 10px 10px no-repeat,
+        var(--sc) 6px calc(100% - 6px) / 10px 10px no-repeat,
+        var(--sc) calc(100% - 6px) calc(100% - 6px) / 10px 10px no-repeat;
+    }
+    body.light .card::before { --sc: radial-gradient(circle, rgba(51,65,85,0.85) 0 1.3px, rgba(100,116,139,0.35) 1.8px 3.6px, transparent 4.2px); }
+    /* tighter, more technical corners */
+    .card, .app-header { border-radius: 14px; }
+    .btn, .btn-add { border-radius: 10px; }
+
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="login-screen">
+    <div class="login-box">
+      <div style="font-size:2.5rem; margin-bottom:10px;">🔐</div>
+      <h2>الدخول الي الإدارة</h2>
+      <p>أدخل رمز الدخول للمتابعة</p>
+      <input type="password" id="login-pass" placeholder="••••" maxlength="8" inputmode="numeric"
+        onkeydown="if(event.key==='Enter')checkLogin()" />
+      <button onclick="checkLogin()">دخول</button>
+      <div id="login-error">رمز الدخول غير صحيح</div>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <!-- App Header -->
+    <div class="app-header">
+      <div>
+        <h1>مقايسة إصلاح وصيانة سيارات</h1>
+        <div class="subtitle">نظام عرض السعر الاحترافي • هندسة ميكانيكية</div>
+      </div>
+      <div class="header-actions">
+        <div class="header-badge">Car Repair Estimate</div>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="تبديل الوضع" aria-label="تبديل الوضع">☀️</button>
+      </div>
+    </div>
+
+    <!-- Saved Estimates -->
+    <div class="card collapsible sec-saved" id="saved-estimates-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="icon">📁</div>
+        <div class="hd-text">المقايسات السابقة<span class="sec-meta" id="saved-meta"></span></div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+          <input type="text" id="searchEstimates" placeholder="بحث بالاسم أو اللوحة أو الرقم..." 
+            style="flex:1; min-width:180px; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-family:inherit; font-size:0.9rem;"
+            oninput="renderSavedEstimates()" />
+          <button class="btn-add" onclick="saveCurrentEstimate()" style="white-space:nowrap;">💾 حفظ المقايسة الحالية</button>
+        </div>
+        <div id="saved-list" style="max-height:220px; overflow-y:auto;"></div>
+      </div>
+    </div>
+
+
+    <!-- Header Data Card -->
+    <div class="card collapsible">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="icon">📋</div>
+        بيانات المقايسة والعميل
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>تاريخ المقايسة</label>
+            <input type="date" id="estDate" />
+          </div>
+          <div class="form-group">
+            <label>سارية لمدة (أيام)</label>
+            <input type="number" id="validDays" value="7" min="1" max="90" />
+          </div>
+          <div class="form-group">
+            <label>رقم المقايسة</label>
+            <input type="text" id="estNumber" placeholder="مثال: EST-2026-001" />
+          </div>
+          <div class="form-group">
+            <label>اسم العميل / الشركة</label>
+            <input type="text" id="clientName" placeholder="اسم العميل أو الشركة" />
+          </div>
+          <div class="form-group">
+            <label>رقم البوليصة / التأمين</label>
+            <input type="text" id="insuranceName" placeholder="رقم البوليصة أو اسم الشركة" />
+          </div>
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="phone" placeholder="01xxxxxxxxx" />
+          </div>
+          <div class="form-group">
+            <label>ماركة وموديل السيارة</label>
+            <input type="text" id="carModel" placeholder="مثال: تويوتا كامري" />
+          </div>
+          <div class="form-group">
+            <label>سنة الصنع</label>
+            <input type="number" id="carYear" placeholder="2020" min="1980" max="2030" />
+          </div>
+          <div class="form-group">
+            <label>رقم اللوحة</label>
+            <input type="text" id="plateNumber" placeholder="أ ب ج 1234" />
+          </div>
+          <div class="form-group">
+            <label>رقم الشاسيه (VIN)</label>
+            <input type="text" id="vin" placeholder="رقم الشاسيه الكامل" />
+          </div>
+          <div class="form-group">
+            <label>عداد الكيلومترات (كم)</label>
+            <input type="number" id="odometer" placeholder="مثال: 85000" />
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>المهندس / الفاحص المسؤول</label>
+            <input type="text" id="engineer" placeholder="اسم المهندس أو الفاحص" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Common parts datalist for autocomplete -->
+    <datalist id="common-parts">
+      <option value="فلتر زيت"></option>
+      <option value="فلتر هواء"></option>
+      <option value="فلتر مكيف"></option>
+      <option value="فلتر وقود"></option>
+      <option value="زيت محرك تخليقي 5W-30"></option>
+      <option value="زيت محرك تخليقي 5W-40"></option>
+      <option value="زيت محرك نصف تخليقي"></option>
+      <option value="زيت فرامل DOT4"></option>
+      <option value="سائل تبريد / روديتر"></option>
+      <option value="طقم تيل فرامل أمامي"></option>
+      <option value="طقم تيل فرامل خلفي"></option>
+      <option value="طنبورة فرامل"></option>
+      <option value="خرط طناير"></option>
+      <option value="مساعد أمامي"></option>
+      <option value="مساعد خلفي"></option>
+      <option value="قماشات / مقصات"></option>
+      <option value="سكرتيرة"></option>
+      <option value="طقم كلاتش"></option>
+      <option value="بطارية"></option>
+      <option value="شمعات احتراق (بواجي)"></option>
+      <option value="سبرنجات"></option>
+      <option value="كوتة مكنه"></option>
+      <option value="مياه مساحات"></option>
+      <option value="فحص كمبيوتر"></option>
+      <option value="ضبط زوايا"></option>
+      <option value="صيانة دورية"></option>
+      <option value="تغيير زيت وفلتر"></option>
+      <option value="غسيل موتور"></option>
+      <option value="غسيل سياره كامل"></option>
+    </datalist>
+
+    <!-- Section 1: قطع غيار -->
+    <div class="card collapsible sec-parts" id="section-parts">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="icon">🔧</div>
+        <div class="hd-text">1. قطع الغيار<span class="sec-meta" id="parts-meta"></span></div>
+      </div>
+      <div class="card-body">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-num">م</th>
+                <th class="col-desc">البند / الوصف</th>
+                <th class="col-qty">الكمية</th>
+                <th class="col-price">سعر الوحدة</th>
+                <th class="col-total">الإجمالي</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody id="parts-body"></tbody>
+          </table>
+        </div>
+        <button class="btn-add" onclick="addRow('parts')">＋ إضافة بند</button>
+
+        <div class="discount-control">
+          <label>نسبة الخصم على قطع الغيار (%)</label>
+          <input type="number" id="parts-discount" value="0" min="0" max="100" step="0.5" oninput="recalcSection('parts')" />
+        </div>
+
+        <div class="section-summary">
+          <div class="summary-item">
+            <div class="label">إجمالي القسم</div>
+            <div class="value" id="parts-subtotal">0.00 ج.م</div>
+          </div>
+          <div class="summary-item discount">
+            <div class="label">مبلغ الخصم</div>
+            <div class="value" id="parts-discount-amount">0.00 ج.م</div>
+          </div>
+          <div class="summary-item net">
+            <div class="label">صافي القسم</div>
+            <div class="value" id="parts-net">0.00 ج.م</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: زيوت وسوائل -->
+    <div class="card collapsible sec-oils" id="section-oils">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="icon">🛢️</div>
+        <div class="hd-text">2. زيوت وسوائل<span class="sec-meta" id="oils-meta"></span></div>
+      </div>
+      <div class="card-body">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-num">م</th>
+                <th class="col-desc">البند / الوصف</th>
+                <th class="col-qty">الكمية</th>
+                <th class="col-price">سعر الوحدة</th>
+                <th class="col-total">الإجمالي</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody id="oils-body"></tbody>
+          </table>
+        </div>
+        <button class="btn-add" onclick="addRow('oils')">＋ إضافة بند</button>
+
+        <div class="discount-control">
+          <label>نسبة الخصم على الزيوت والسوائل (%)</label>
+          <input type="number" id="oils-discount" value="0" min="0" max="100" step="0.5" oninput="recalcSection('oils')" />
+        </div>
+
+        <div class="section-summary">
+          <div class="summary-item">
+            <div class="label">إجمالي القسم</div>
+            <div class="value" id="oils-subtotal">0.00 ج.م</div>
+          </div>
+          <div class="summary-item discount">
+            <div class="label">مبلغ الخصم</div>
+            <div class="value" id="oils-discount-amount">0.00 ج.م</div>
+          </div>
+          <div class="summary-item net">
+            <div class="label">صافي القسم</div>
+            <div class="value" id="oils-net">0.00 ج.م</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: المصنعيات -->
+    <div class="card collapsible sec-labor" id="section-labor">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="icon">🛠️</div>
+        <div class="hd-text">3. المصنعيات<span class="sec-meta" id="labor-meta"></span></div>
+      </div>
+      <div class="card-body">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-num">م</th>
+                <th class="col-desc">البند / الوصف</th>
+                <th class="col-qty">الكمية</th>
+                <th class="col-price">سعر الوحدة</th>
+                <th class="col-total">الإجمالي</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody id="labor-body"></tbody>
+          </table>
+        </div>
+        <button class="btn-add" onclick="addRow('labor')">＋ إضافة بند</button>
+
+        <div class="discount-control">
+          <label>نسبة الخصم على المصنعيات (%)</label>
+          <input type="number" id="labor-discount" value="0" min="0" max="100" step="0.5" oninput="recalcSection('labor')" />
+        </div>
+
+        <div class="section-summary">
+          <div class="summary-item">
+            <div class="label">إجمالي القسم</div>
+            <div class="value" id="labor-subtotal">0.00 ج.م</div>
+          </div>
+          <div class="summary-item discount">
+            <div class="label">مبلغ الخصم</div>
+            <div class="value" id="labor-discount-amount">0.00 ج.م</div>
+          </div>
+          <div class="summary-item net">
+            <div class="label">صافي القسم</div>
+            <div class="value" id="labor-net">0.00 ج.م</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grand Total -->
+    <div class="grand-total-card">
+      <h3>ملخص المبالغ النهائية</h3>
+      <div class="grand-grid">
+        <div class="grand-item">
+          <div class="label">صافي قطع الغيار</div>
+          <div class="value" id="grand-parts">0.00 ج.م</div>
+        </div>
+        <div class="grand-item">
+          <div class="label">صافي الزيوت والسوائل</div>
+          <div class="value" id="grand-oils">0.00 ج.م</div>
+        </div>
+        <div class="grand-item">
+          <div class="label">صافي المصنعيات</div>
+          <div class="value" id="grand-labor">0.00 ج.م</div>
+        </div>
+        <div class="grand-item">
+          <div class="label">المجموع قبل الضريبة</div>
+          <div class="value" id="grand-before-tax">0.00 ج.م</div>
+        </div>
+        <div class="grand-item" style="display:flex; flex-direction:column; gap:8px;">
+          <div class="label">نسبة الضريبة (%)</div>
+          <input type="number" id="tax-rate" value="0" min="0" max="100" step="0.5"
+            style="width:100%; padding:8px 10px; border:1.5px solid rgba(255,255,255,0.3); border-radius:8px; background:rgba(255,255,255,0.1); color:white; font-family:inherit; font-size:1rem; text-align:center;"
+            oninput="updateGrandTotal()" />
+        </div>
+        <div class="grand-item">
+          <div class="label">مبلغ الضريبة</div>
+          <div class="value" id="grand-tax">0.00 ج.م</div>
+        </div>
+        <div class="grand-item grand-final">
+          <div class="label">المبلغ الإجمالي المستحق (شامل الضريبة)</div>
+          <div class="value" id="grand-total">0.00 ج.م</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms (Editable) -->
+    <div class="card collapsible">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="icon">📌</div>
+        الشروط والملاحظات
+      </div>
+      <div class="card-body">
+        <div id="terms-list"></div>
+        <button class="btn-add" onclick="addTerm()" style="margin-top:12px;">＋ إضافة شرط</button>
+
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-line"></div>
+            <div class="sig-label">توقيع العميل بالموافقة</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line"></div>
+            <div class="sig-label">توقيع مدير الورشة</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-bar">
+      <button class="btn btn-primary" onclick="previewPDF()">
+        👁️ معاينة PDF
+      </button>
+      <button class="btn btn-whatsapp" onclick="shareToWhatsApp()">
+        📲 إرسال عبر واتساب
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        🖨️ طباعة مباشرة
+      </button>
+    </div>
+  </div>
+
+  <!-- Sticky total bar -->
+  <div id="sticky-total" onclick="document.querySelector('.grand-total-card').scrollIntoView({behavior:'smooth', block:'center'})">
+    <span class="st-label">الإجمالي المستحق</span>
+    <span class="st-value" id="sticky-total-value">0.00 ج.م</span>
+  </div>
+
+  <!-- PDF Preview Modal -->
+  <div id="pdf-preview-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:99999; overflow:auto; padding:16px;">
+    <div style="max-width:900px; margin:20px auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <div style="background:#0f172a; color:#fff; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <span style="font-weight:700; font-size:1.05rem;">معاينة المقايسة</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="downloadFromPreview()" style="padding:10px 18px; font-size:0.9rem;">💾 حفظ PDF</button>
+          <button class="btn btn-whatsapp" onclick="shareFromPreview()" style="padding:10px 18px; font-size:0.9rem;">📲 واتساب</button>
+          <button class="btn btn-secondary" onclick="closePreview()" style="padding:10px 18px; font-size:0.9rem;">إغلاق</button>
+        </div>
+      </div>
+      <div id="pdf-preview-body" style="padding:12px; overflow:auto; max-height:75vh; background:#f1f5f9;"></div>
+    </div>
+  </div>
+
+  <!-- Hidden PDF Template -->
+  <div id="pdf-content" style="display:none; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; direction: rtl; color: #0f172a; padding: 0; background: white;">
+    <!-- Will be filled by JS -->
+  </div>
+
+  <script>
+    // ========== State ==========
+    const sections = {
+      parts: { rows: [], discount: 0 },
+      oils:  { rows: [], discount: 0 },
+      labor: { rows: [], discount: 0 }
+    };
+
+    let terms = [
+      'الأسعار الموضحة سارية لمدة (7 أيام) من تاريخ إصدار المقايسة.',
+      'تشمل المقايسة الأعطال الظاهرة فقط، وأي أعطال خفية تُعتمد أولاً.',
+      'يتم تسليم قطع الغيار المستبدلة للعميل عند الاستلام.',
+      'الضمان على المصنعيات وقطع الغيار الجديدة وفقاً لسياسة المركز.',
+      'ملاحظة: عند إدخال الكمية (أكثر من 1) تُضرب في سعر القطعة والمصنعية.'
+    ];
+
+    function renderTerms() {
+      const container = document.getElementById('terms-list');
+      container.innerHTML = '';
+      terms.forEach((term, idx) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex; gap:8px; align-items:flex-start; margin-bottom:10px;';
+        div.innerHTML = `
+          <span style="color:#0ea5e9; font-weight:bold; margin-top:10px;">•</span>
+          <input type="text" value="${term.replace(/"/g, '&quot;')}" 
+            style="flex:1; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-family:inherit; font-size:0.9rem;"
+            onblur="terms[${idx}] = this.value" />
+          <button class="btn-remove" onclick="removeTerm(${idx})" title="حذف" style="margin-top:6px;">×</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addTerm() {
+      terms.push('');
+      renderTerms();
+      // Focus the new empty input
+      const inputs = document.querySelectorAll('#terms-list input');
+      if (inputs.length) inputs[inputs.length - 1].focus();
+    }
+
+    function removeTerm(idx) {
+      terms.splice(idx, 1);
+      renderTerms();
+    }
+
+    // ========== Helpers ==========
+    function formatMoney(n) {
+      return Number(n || 0).toLocaleString('ar-EG', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ج.م';
+    }
+
+    function formatNum(n) {
+      return Number(n || 0).toLocaleString('ar-EG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // ========== Table Management (Optimized - no freeze on typing) ==========
+    function addRow(section) {
+      const id = Date.now() + Math.random();
+      sections[section].rows.push({ id, desc: '', qty: 1, price: 0 });
+      renderTable(section);
+      recalcSection(section);
+    }
+
+    function removeRow(section, id) {
+      sections[section].rows = sections[section].rows.filter(r => r.id !== id);
+      renderTable(section);
+      recalcSection(section);
+    }
+
+    // Update data only (no full re-render) — used while typing
+    function updateRowData(section, id, field, value) {
+      const row = sections[section].rows.find(r => r.id === id);
+      if (!row) return;
+      if (field === 'qty' || field === 'price') {
+        row[field] = parseFloat(value) || 0;
+      } else {
+        row[field] = value;
+        updateSectionMeta(section);
+      }
+    }
+
+    // Update only the total cell of one row + recalculate section (light & fast)
+    function updateRowLive(section, id, field, value, inputEl) {
+      updateRowData(section, id, field, value);
+
+      // Update only this row's total cell (don't rebuild whole table)
+      const tr = inputEl.closest('tr');
+      if (tr) {
+        const row = sections[section].rows.find(r => r.id === id);
+        const total = (row.qty || 0) * (row.price || 0);
+        const totalCell = tr.querySelector('.col-total');
+        if (totalCell) totalCell.textContent = formatNum(total);
+      }
+
+      recalcSection(section);
+    }
+
+    function renderTable(section) {
+      const tbody = document.getElementById(`${section}-body`);
+      tbody.innerHTML = '';
+
+      sections[section].rows.forEach((row, idx) => {
+        const total = (row.qty || 0) * (row.price || 0);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="col-num">${idx + 1}</td>
+          <td class="col-desc">
+            <input type="text" value="${row.desc || ''}" placeholder="وصف البند..." list="common-parts"
+              onblur="updateRowData('${section}', ${row.id}, 'desc', this.value)" />
+          </td>
+          <td class="col-qty">
+            <input type="number" min="0" step="0.5" value="${row.qty || 1}" inputmode="decimal"
+              onchange="updateRowLive('${section}', ${row.id}, 'qty', this.value, this)"
+              onblur="updateRowLive('${section}', ${row.id}, 'qty', this.value, this)" />
+          </td>
+          <td class="col-price">
+            <input type="number" min="0" step="0.01" value="${row.price || 0}" inputmode="decimal"
+              onchange="updateRowLive('${section}', ${row.id}, 'price', this.value, this)"
+              onblur="updateRowLive('${section}', ${row.id}, 'price', this.value, this)" />
+          </td>
+          <td class="col-total text-left">${formatNum(total)}</td>
+          <td class="col-actions">
+            <button class="btn-remove" onclick="removeRow('${section}', ${row.id})" title="حذف">×</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ========== Calculations ==========
+    function recalcSection(section) {
+      const discInput = document.getElementById(`${section}-discount`);
+      const discountPct = parseFloat(discInput.value) || 0;
+      sections[section].discount = discountPct;
+
+      let subtotal = 0;
+      sections[section].rows.forEach(r => {
+        subtotal += (r.qty || 0) * (r.price || 0);
+      });
+
+      const discountAmount = subtotal * (discountPct / 100);
+      const net = subtotal - discountAmount;
+
+      document.getElementById(`${section}-subtotal`).textContent = formatMoney(subtotal);
+      document.getElementById(`${section}-discount-amount`).textContent = formatMoney(discountAmount);
+      document.getElementById(`${section}-net`).textContent = formatMoney(net);
+
+      updateGrandTotal();
+    }
+
+    function updateGrandTotal() {
+      const partsNet = getSectionNet('parts');
+      const oilsNet  = getSectionNet('oils');
+      const laborNet = getSectionNet('labor');
+      const beforeTax = partsNet + oilsNet + laborNet;
+
+      const taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
+      const taxAmount = beforeTax * (taxRate / 100);
+      const finalTotal = beforeTax + taxAmount;
+
+      document.getElementById('grand-parts').textContent = formatMoney(partsNet);
+      document.getElementById('grand-oils').textContent  = formatMoney(oilsNet);
+      document.getElementById('grand-labor').textContent = formatMoney(laborNet);
+      document.getElementById('grand-before-tax').textContent = formatMoney(beforeTax);
+      document.getElementById('grand-tax').textContent = formatMoney(taxAmount);
+      document.getElementById('grand-total').textContent = formatMoney(finalTotal);
+      const st = document.getElementById('sticky-total-value');
+      if (st) st.textContent = formatMoney(finalTotal);
+      ['parts', 'oils', 'labor'].forEach(updateSectionMeta);
+    }
+
+    // Item count + net total shown in each section header
+    function updateSectionMeta(section) {
+      const el = document.getElementById(section + '-meta');
+      if (!el) return;
+      const count = sections[section].rows.filter(r => (r.desc && r.desc.trim()) || (r.price > 0)).length;
+      const word = count === 0 ? 'لا بنود' : (count === 1 ? 'بند واحد' : count.toLocaleString('ar-EG') + (count <= 10 ? ' بنود' : ' بند'));
+      el.textContent = '(' + word + ') – ' + formatMoney(getSectionNet(section));
+    }
+
+    function getSectionNet(section) {
+      let subtotal = 0;
+      sections[section].rows.forEach(r => {
+        subtotal += (r.qty || 0) * (r.price || 0);
+      });
+      const disc = sections[section].discount || 0;
+      return subtotal - (subtotal * disc / 100);
+    }
+
+    function getSectionSubtotal(section) {
+      let subtotal = 0;
+      sections[section].rows.forEach(r => {
+        subtotal += (r.qty || 0) * (r.price || 0);
+      });
+      return subtotal;
+    }
+
+    // ========== PDF Generation (Fixed for Mobile) ==========
+    function getEstimateData() {
+      const rawDate = document.getElementById('estDate').value;
+      const validDays = parseInt(document.getElementById('validDays').value) || 7;
+      const data = {
+        date: rawDate || '—',
+        number: document.getElementById('estNumber').value || '—',
+        client: document.getElementById('clientName').value || '—',
+        insurance: document.getElementById('insuranceName').value || '—',
+        phone: document.getElementById('phone').value || '—',
+        carModel: document.getElementById('carModel').value || '—',
+        year: document.getElementById('carYear').value || '—',
+        plate: document.getElementById('plateNumber').value || '—',
+        vin: document.getElementById('vin').value || '—',
+        odometer: document.getElementById('odometer').value || '—',
+        engineer: document.getElementById('engineer').value || '—',
+        validDays: validDays,
+        validUntil: '—'
+      };
+
+      if (rawDate) {
+        const d = new Date(rawDate);
+        data.date = d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+        const until = new Date(d);
+        until.setDate(until.getDate() + validDays);
+        data.validUntil = until.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+      return data;
+    }
+
+    function buildPdfHtml(data) {
+      const partsSub = getSectionSubtotal('parts');
+      const oilsSub  = getSectionSubtotal('oils');
+      const laborSub = getSectionSubtotal('labor');
+      const partsNet = getSectionNet('parts');
+      const oilsNet  = getSectionNet('oils');
+      const laborNet = getSectionNet('labor');
+      const totalBeforeDiscount = partsSub + oilsSub + laborSub;
+      const totalDiscount = totalBeforeDiscount - (partsNet + oilsNet + laborNet);
+      const beforeTax = partsNet + oilsNet + laborNet;
+      const taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
+      const taxAmount = beforeTax * (taxRate / 100);
+      const grandTotal = beforeTax + taxAmount;
+
+      let rowNum = 0;
+      let tableRows = '';
+
+      function addRowsFromSection(sectionKey, typeLabel, typeBg) {
+        sections[sectionKey].rows.forEach(r => {
+          if (!r.desc && !(r.price > 0)) return;
+          rowNum++;
+          const bg = (rowNum % 2 === 0) ? '#ececec' : '#ffffff';   // zebra rows (prints well in B/W)
+          const lineTotal = (r.qty || 0) * (r.price || 0);
+          tableRows += '<tr style="page-break-inside:avoid;">' +
+            '<td style="background:' + bg + ';border:1px solid #333333;padding:3px 4px;text-align:center;font-size:11px;color:#000000;">' + rowNum + '</td>' +
+            '<td style="background:' + bg + ';border:1px solid #333333;padding:3px 4px;text-align:right;font-size:11px;color:#000000;">' + (r.desc || '—') + '</td>' +
+            '<td style="background:' + typeBg + ';border:1px solid #333333;padding:3px 4px;text-align:center;font-size:11px;color:#000000;font-weight:700;">' + typeLabel + '</td>' +
+            '<td style="background:' + bg + ';border:1px solid #333333;padding:3px 4px;text-align:center;font-size:11px;color:#000000;">' + (r.qty || 0) + '</td>' +
+            '<td style="background:' + bg + ';border:1px solid #333333;padding:3px 4px;text-align:left;font-size:11px;direction:ltr;color:#000000;">' + formatNum(r.price) + '</td>' +
+            '<td style="background:' + bg + ';border:1px solid #333333;padding:3px 4px;text-align:left;font-size:11px;direction:ltr;color:#000000;font-weight:700;">' + formatNum(lineTotal) + '</td>' +
+            '</tr>';
+        });
+      }
+
+      addRowsFromSection('parts', 'قطعة غيار', '#dbeafe');
+      addRowsFromSection('oils', 'زيوت وسوائل', '#fde68a');
+      addRowsFromSection('labor', 'مصنعية', '#bbf7d0');
+
+      if (rowNum === 0) {
+        tableRows = '<tr><td colspan="6" style="border:1px solid #64748b;padding:20px;text-align:center;color:#64748b;font-size:13px;">لا توجد بنود</td></tr>';
+      }
+
+      let termsHtml = '';
+      const activeTerms = terms.filter(t => t && t.trim());
+      if (activeTerms.length === 0) {
+        termsHtml = '<div style="color:#000000;font-size:13px;">لا توجد شروط</div>';
+      } else {
+        activeTerms.forEach(t => {
+          termsHtml += '<div style="margin-bottom:1px;font-size:9px;page-break-inside:avoid;">• ' + t + '</div>';
+        });
+      }
+
+      // IMPORTANT: width fixed to 794px = A4 @ 96dpi. This prevents half-page issue.
+      return '' +
+'<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;direction:rtl;text-align:right;color:#000000;background:#ffffff;width:100%;max-width:100%;margin:0;box-sizing:border-box;padding:10px 10px;line-height:1.5;font-size:14px;font-weight:500;word-break:break-word;overflow-wrap:anywhere;">' +
+
+  // Title
+  '<div style="text-align:center;margin-bottom:5px;border-bottom:2px solid #000000;padding-bottom:4px;">' +
+    '<div style="font-size:16px;font-weight:800;color:#000000;margin-bottom:0;">مقايسة إصلاح وصيانة سيارات</div>' +
+    '<div style="font-size:11px;color:#334155;">Car Repair Estimate</div>' +
+    '<div style="margin-top:2px;font-size:11px;color:#000000;">رقم المقايسة: <strong>' + data.number + '</strong> &nbsp;|&nbsp; التاريخ: <strong>' + data.date + '</strong></div>' +
+    '<div style="margin-top:1px;font-size:11px;color:#b91c1c;font-weight:700;">سارية حتى: ' + data.validUntil + ' (' + data.validDays + ' أيام)</div>' +
+  '</div>' +
+
+  // Client table
+  '<table style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:5px;font-size:9px;line-height:1.25;">' +
+    '<tr>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;font-weight:700;width:18%;">اسم العميل</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;width:32%;">' + data.client + '</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;font-weight:700;width:18%;">رقم البوليصة</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;width:32%;">' + data.insurance + '</td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;font-weight:700;">رقم الهاتف</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;">' + data.phone + '</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;font-weight:700;">نوع السيارة</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;">' + data.carModel + ' ' + data.year + '</td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;font-weight:700;">رقم اللوحة</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;">' + data.plate + '</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;font-weight:700;">رقم الشاسيه</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;">' + data.vin + '</td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;font-weight:700;">قراءة العداد</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;">' + data.odometer + ' كم</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;font-weight:700;">المهندس</td>' +
+      '<td style="border:1px solid #333333;padding:2px 6px;color:#000000;">' + data.engineer + '</td>' +
+    '</tr>' +
+  '</table>' +
+
+  // Items table
+  '<table style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:8px;font-size:11px;">' +
+    '<thead><tr style="background:#ffffff;color:#000000;">' +
+      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:6%;color:#000000;font-weight:700;">م</th>' +
+      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:38%;color:#000000;font-weight:700;">البند / وصف العطل</th>' +
+      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:14%;color:#000000;font-weight:700;">النوع</th>' +
+      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:10%;color:#000000;font-weight:700;">الكمية</th>' +
+      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:15%;color:#000000;font-weight:700;">سعر الوحدة</th>' +
+      '<th style="white-space:normal;text-align:center;border:1px solid #000000;padding:4px 4px;width:17%;color:#000000;font-weight:700;">إجمالي البند</th>' +
+    '</tr></thead>' +
+    '<tbody>' + tableRows + '</tbody>' +
+  '</table>' +
+
+  // Totals
+  '<table style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:6px;font-size:10px;line-height:1.25;">' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:600;width:55%;">إجمالي قطع الغيار (قبل الخصم)</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;">' + formatMoney(partsSub) + '</td></tr>' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:600;">إجمالي قطع الغيار (بعد الخصم)</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;">' + formatMoney(partsNet) + '</td></tr>' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:600;">إجمالي الزيوت والسوائل (قبل الخصم)</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;">' + formatMoney(oilsSub) + '</td></tr>' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:600;">إجمالي الزيوت والسوائل (بعد الخصم)</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;">' + formatMoney(oilsNet) + '</td></tr>' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:600;">إجمالي المصنعيات (قبل الخصم)</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;">' + formatMoney(laborSub) + '</td></tr>' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:600;">إجمالي المصنعيات (بعد الخصم)</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;">' + formatMoney(laborNet) + '</td></tr>' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:600;">الإجمالي قبل الخصم</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;font-weight:700;">' + formatMoney(totalBeforeDiscount) + '</td></tr>' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:600;color:#b91c1c;">إجمالي الخصم</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;color:#b91c1c;">' + formatMoney(totalDiscount) + '</td></tr>' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:700;">المجموع بعد الخصم (قبل الضريبة)</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;font-weight:700;">' + formatMoney(beforeTax) + '</td></tr>' +
+    '<tr><td style="border:1px solid #333333;padding:2px 8px;color:#000000;font-weight:600;">الضريبة (' + taxRate + '%)</td>' +
+        '<td style="border:1px solid #333333;padding:2px 8px;color:#000000;text-align:left;direction:ltr;">' + formatMoney(taxAmount) + '</td></tr>' +
+    '<tr>' +
+        '<td style="border:3px solid #000000;background:#e5e7eb;padding:6px 8px;font-weight:800;font-size:14px;color:#000000;">المبلغ الإجمالي المستحق</td>' +
+        '<td style="border:3px solid #000000;background:#e5e7eb;padding:6px 8px;text-align:left;direction:ltr;font-weight:800;font-size:15px;color:#000000;">' + formatMoney(grandTotal) + '</td></tr>' +
+  '</table>' +
+
+  // Terms
+  '<div style="border:1px solid #333333;margin-bottom:6px;">' +
+    '<div style="padding:2px 8px;font-weight:700;font-size:11px;border-bottom:1px solid #333333;color:#000000;">الشروط والملاحظات</div>' +
+    '<div style="padding:3px 8px;font-size:9px;line-height:1.3;color:#000000;">' + termsHtml + '</div>' +
+  '</div>' +
+
+  // Signatures
+  '<div style="display:flex;justify-content:space-between;margin-top:6px;">' +
+    '<div style="text-align:center;width:42%;">' +
+      '<div style="border-bottom:1.5px solid #64748b;height:22px;margin-bottom:3px;"></div>' +
+      '<div style="font-size:10px;color:#000000;font-weight:600;">توقيع العميل بالموافقة</div>' +
+    '</div>' +
+    '<div style="text-align:center;width:42%;">' +
+      '<div style="border-bottom:1.5px solid #64748b;height:22px;margin-bottom:3px;"></div>' +
+      '<div style="font-size:10px;color:#000000;font-weight:600;">توقيع مدير الورشة</div>' +
+    '</div>' +
+  '</div>' +
+
+  '' +
+
+'</div>';
+    }
+
+    function loadHtml2Pdf() {
+      return new Promise((resolve, reject) => {
+        if (typeof html2pdf !== 'undefined') { resolve(); return; }
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('فشل تحميل مكتبة PDF'));
+        document.head.appendChild(script);
+      });
+    }
+
+    async function generatePdfBlob() {
+      await loadHtml2Pdf();
+
+      // Sync terms
+      document.querySelectorAll('#terms-list input').forEach((inp, i) => {
+        if (terms[i] !== undefined) terms[i] = inp.value;
+      });
+
+      const data = getEstimateData();
+      const html = buildPdfHtml(data);
+      const filename = 'مقايسة_' + (data.number !== '—' ? data.number : 'Estimate') + '_' + new Date().toISOString().slice(0,10) + '.pdf';
+
+      // Hide app
+      const app = document.querySelector('.app-container');
+      if (app) app.style.display = 'none';
+
+      // ROOT CAUSE of "cut on the left": the page is dir=rtl, so html2pdf's temporary
+      // container overflows to the LEFT (negative x) and html2canvas crops it.
+      // Force LTR on the document while capturing, then restore it.
+      const prevHtmlDir = document.documentElement.getAttribute('dir');
+      const prevBodyPad = document.body.style.padding;
+      document.documentElement.setAttribute('dir', 'ltr');
+      document.body.style.padding = '0';
+      const restoreDoc = () => {
+        if (prevHtmlDir === null) document.documentElement.removeAttribute('dir');
+        else document.documentElement.setAttribute('dir', prevHtmlDir);
+        document.body.style.padding = prevBodyPad;
+      };
+
+      // Clean old
+      const old = document.getElementById('temp-pdf-element');
+      if (old) old.remove();
+
+      // OUTER wrapper: LTR + fixed full A4 width (this fixes the "content on one side" bug)
+      const element = document.createElement('div');
+      element.id = 'temp-pdf-element';
+      element.style.cssText = 'position:relative; width:794px; background:#ffffff; margin:0; padding:0; box-sizing:border-box; direction:ltr; left:0; top:0;';
+      
+      // INNER: RTL content that fills 100% of the outer
+      const inner = document.createElement('div');
+      inner.style.cssText = 'width:100%; direction:rtl; text-align:right; background:#ffffff; box-sizing:border-box; margin:0; padding:0';
+      inner.innerHTML = html;
+      element.appendChild(inner);
+
+      document.body.insertBefore(element, document.body.firstChild);
+
+      window.scrollTo(0, 0);
+      element.offsetHeight;
+      await new Promise(r => setTimeout(r, 900));
+
+      try {
+        const opt = {
+          margin: [8, 8, 8, 8],   // equal left/right margins
+          filename: filename,
+          image: { type: 'png', quality: 1 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            width: 794,
+            windowWidth: 794,
+            x: 0,
+            y: 0,
+            scrollX: 0,
+            scrollY: 0,
+            allowTaint: true,
+            onclone: function(doc) {
+              // make the cloned page LTR, un-padded and exactly 794px wide, anchored at x=0
+              doc.documentElement.setAttribute('dir', 'ltr');
+              doc.body.style.cssText += ';padding:0;margin:0;direction:ltr;';
+              var box = doc.querySelector('.html2pdf__container');
+              if (box) {
+                box.style.width = '794px';
+                box.style.left = '0px';
+                box.style.right = 'auto';
+                box.style.margin = '0';
+                box.style.direction = 'ltr';
+              }
+              var el = doc.getElementById('temp-pdf-element');
+              if (el) { el.style.left = '0'; el.style.margin = '0'; el.style.width = '794px'; }
+            }
+          },
+          jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait',
+            compress: true
+          },
+          pagebreak: { mode: ['css', 'legacy'] }
+        };
+
+        const pdfBlob = await html2pdf().set(opt).from(element).outputPdf('blob');
+
+        element.remove();
+        restoreDoc();
+        if (app) app.style.display = '';
+
+        return { blob: pdfBlob, filename, data };
+      } catch (err) {
+        const t = document.getElementById('temp-pdf-element');
+        if (t) t.remove();
+        restoreDoc();
+        if (app) app.style.display = '';
+        throw err;
+      }
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 200);
+    }
+
+    // ========== Preview & Download ==========
+    let _previewBlob = null;
+    let _previewFilename = null;
+    let _previewData = null;
+
+    async function previewPDF() {
+      const btn = document.querySelector('.btn-primary');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '⏳ جاري التحضير...';
+
+      try {
+        const result = await generatePdfBlob();
+        _previewBlob = result.blob;
+        _previewFilename = result.filename;
+        _previewData = result.data;
+
+        // Show HTML preview (faster than embedding PDF)
+        const data = getEstimateData();
+        const html = buildPdfHtml(data);
+        const body = document.getElementById('pdf-preview-body');
+        body.innerHTML =
+          '<div id="pv-wrap" style="direction:ltr; margin:0 auto; overflow:hidden;">' +
+            '<div id="pv-page" style="width:794px; direction:rtl; transform-origin:top left; background:#fff; box-shadow:0 2px 12px rgba(0,0,0,0.1);">' + html + '</div>' +
+          '</div>';
+        document.getElementById('pdf-preview-modal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        const avail = body.clientWidth - 24;               // body has 12px padding each side
+        const k = Math.min(1, avail / 794);
+        const pv = document.getElementById('pv-page');
+        const wrap = document.getElementById('pv-wrap');
+        pv.style.transform = 'scale(' + k + ')';
+        wrap.style.width = Math.floor(794 * k) + 'px';
+        wrap.style.height = Math.ceil(pv.offsetHeight * k) + 'px';
+      } catch (err) {
+        console.error(err);
+        alert('حدث خطأ أثناء المعاينة.\n' + (err.message || err));
+      }
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+
+    function closePreview() {
+      document.getElementById('pdf-preview-modal').style.display = 'none';
+      document.body.style.overflow = '';
+      document.getElementById('pdf-preview-body').innerHTML = '';
+    }
+
+    function downloadFromPreview() {
+      if (_previewBlob && _previewFilename) {
+        downloadBlob(_previewBlob, _previewFilename);
+        // also auto-save to history
+        saveCurrentEstimate(true);
+      }
+    }
+
+    async function shareFromPreview() {
+      if (!_previewBlob) return;
+      const file = new File([_previewBlob], _previewFilename || 'estimate.pdf', { type: 'application/pdf' });
+      const data = _previewData || {};
+      try {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'مقايسة إصلاح سيارة',
+            text: 'مقايسة رقم ' + (data.number || '') + ' - ' + (data.client || '')
+          });
+        } else {
+          downloadBlob(_previewBlob, _previewFilename);
+          const text = encodeURIComponent('مقايسة رقم ' + (data.number || '') + '\nالعميل: ' + (data.client || ''));
+          window.open('https://wa.me/?text=' + text, '_blank');
+        }
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          downloadBlob(_previewBlob, _previewFilename);
+        }
+      }
+    }
+
+    async function shareToWhatsApp() {
+      const btn = document.querySelector('.btn-whatsapp');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '⏳ جاري التحضير...';
+      try {
+        const { blob, filename, data } = await generatePdfBlob();
+        const file = new File([blob], filename, { type: 'application/pdf' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: 'مقايسة إصلاح سيارة', text: 'مقايسة رقم ' + data.number + ' - ' + (data.client || '') });
+          btn.innerHTML = '✅ تم';
+        } else {
+          downloadBlob(blob, filename);
+          const text = encodeURIComponent('مقايسة رقم ' + data.number + '\nالعميل: ' + (data.client || '') + '\nتم تحميل الملف، أرفقه من التحميلات.');
+          window.open('https://wa.me/?text=' + text, '_blank');
+          btn.innerHTML = '✅ تم التحميل';
+        }
+        setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 2000);
+      } catch (err) {
+        if (err.name === 'AbortError') { btn.innerHTML = originalText; btn.disabled = false; return; }
+        alert('حدث خطأ. سيتم تحميل الملف.');
+        try { const r = await generatePdfBlob(); downloadBlob(r.blob, r.filename); } catch(e){}
+        btn.innerHTML = originalText; btn.disabled = false;
+      }
+    }
+
+    // ========== Saved Estimates (LocalStorage) ==========
+    const STORAGE_KEY = 'car_estimates_v1';
+
+    function getSavedEstimates() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch(e) { return []; }
+    }
+
+    function setSavedEstimates(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function collectCurrentState() {
+      // sync terms
+      document.querySelectorAll('#terms-list input').forEach((inp, i) => {
+        if (terms[i] !== undefined) terms[i] = inp.value;
+      });
+      return {
+        id: Date.now(),
+        savedAt: new Date().toISOString(),
+        header: {
+          date: document.getElementById('estDate').value,
+          validDays: document.getElementById('validDays').value,
+          number: document.getElementById('estNumber').value,
+          client: document.getElementById('clientName').value,
+          insurance: document.getElementById('insuranceName').value,
+          phone: document.getElementById('phone').value,
+          carModel: document.getElementById('carModel').value,
+          year: document.getElementById('carYear').value,
+          plate: document.getElementById('plateNumber').value,
+          vin: document.getElementById('vin').value,
+          odometer: document.getElementById('odometer').value,
+          engineer: document.getElementById('engineer').value,
+          taxRate: document.getElementById('tax-rate').value
+        },
+        sections: JSON.parse(JSON.stringify(sections)),
+        terms: terms.slice()
+      };
+    }
+
+    function saveCurrentEstimate(silent) {
+      const state = collectCurrentState();
+      if (!state.header.client && !state.header.plate && !state.header.number) {
+        if (!silent) alert('أدخل على الأقل اسم العميل أو رقم اللوحة أو رقم المقايسة قبل الحفظ.');
+        return;
+      }
+      let list = getSavedEstimates();
+      // update if same number exists
+      const idx = list.findIndex(e => e.header.number && e.header.number === state.header.number);
+      if (idx >= 0) list[idx] = state;
+      else list.unshift(state);
+      // keep last 50
+      if (list.length > 50) list = list.slice(0, 50);
+      setSavedEstimates(list);
+      renderSavedEstimates();
+      if (!silent) alert('تم حفظ المقايسة بنجاح.');
+    }
+
+    function loadEstimate(id) {
+      const list = getSavedEstimates();
+      const est = list.find(e => e.id === id);
+      if (!est) return;
+      const h = est.header;
+      document.getElementById('estDate').value = h.date || '';
+      document.getElementById('validDays').value = h.validDays || 7;
+      document.getElementById('estNumber').value = h.number || '';
+      document.getElementById('clientName').value = h.client || '';
+      document.getElementById('insuranceName').value = h.insurance || '';
+      document.getElementById('phone').value = h.phone || '';
+      document.getElementById('carModel').value = h.carModel || '';
+      document.getElementById('carYear').value = h.year || '';
+      document.getElementById('plateNumber').value = h.plate || '';
+      document.getElementById('vin').value = h.vin || '';
+      document.getElementById('odometer').value = h.odometer || '';
+      document.getElementById('engineer').value = h.engineer || '';
+      document.getElementById('tax-rate').value = h.taxRate || 0;
+
+      // restore sections
+      ['parts','oils','labor'].forEach(s => {
+        sections[s] = est.sections[s] || { rows: [], discount: 0 };
+        document.getElementById(s + '-discount').value = sections[s].discount || 0;
+        renderTable(s);
+        recalcSection(s);
+      });
+      terms = est.terms && est.terms.length ? est.terms.slice() : terms;
+      renderTerms();
+      updateGrandTotal();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteEstimate(id) {
+      if (!confirm('هل تريد حذف هذه المقايسة؟')) return;
+      let list = getSavedEstimates().filter(e => e.id !== id);
+      setSavedEstimates(list);
+      renderSavedEstimates();
+    }
+
+    function renderSavedEstimates() {
+      const q = (document.getElementById('searchEstimates').value || '').trim().toLowerCase();
+      const _all = getSavedEstimates();
+      const _mt = document.getElementById('saved-meta');
+      if (_mt) _mt.textContent = _all.length ? '(' + _all.length.toLocaleString('ar-EG') + ' محفوظة)' : '(لا يوجد)';
+      let list = getSavedEstimates();
+      if (q) {
+        list = list.filter(e => {
+          const h = e.header || {};
+          return (h.client||'').toLowerCase().includes(q)
+            || (h.plate||'').toLowerCase().includes(q)
+            || (h.number||'').toLowerCase().includes(q)
+            || (h.date||'').includes(q)
+            || (h.phone||'').includes(q);
+        });
+      }
+      const box = document.getElementById('saved-list');
+      if (!list.length) {
+        box.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:16px; font-size:0.9rem;">لا توجد مقايسات محفوظة</div>';
+        return;
+      }
+      box.innerHTML = list.map(e => {
+        const h = e.header || {};
+        const d = h.date ? new Date(h.date).toLocaleDateString('ar-EG') : '—';
+        return '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:10px 12px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:8px; background:#f8fafc; color:#0f172a; flex-wrap:wrap;">' +
+          '<div style="flex:1; min-width:140px;">' +
+            '<div style="font-weight:700; font-size:0.92rem;">' + (h.client || 'بدون اسم') + '</div>' +
+            '<div style="font-size:0.8rem; color:#64748b;">' + (h.number || '—') + ' | ' + d + ' | ' + (h.plate || '—') + '</div>' +
+          '</div>' +
+          '<div style="display:flex; gap:6px;">' +
+            '<button class="btn-add" style="padding:6px 12px; font-size:0.8rem;" onclick="loadEstimate(' + e.id + ')">فتح</button>' +
+            '<button class="btn-remove" style="font-size:1rem;" onclick="deleteEstimate(' + e.id + ')" title="حذف">×</button>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    function autoEstNumber() {
+      const y = new Date().getFullYear();
+      const list = getSavedEstimates();
+      const nums = list.map(e => {
+        const m = (e.header.number || '').match(/EST-(\d{4})-(\d+)/i);
+        return m && parseInt(m[1]) === y ? parseInt(m[2]) : 0;
+      });
+      const next = (Math.max(0, ...nums) || 0) + 1;
+      document.getElementById('estNumber').value = 'EST-' + y + '-' + String(next).padStart(3, '0');
+    }
+
+
+    function checkLogin() {
+      const pass = document.getElementById('login-pass').value;
+      if (pass === '2106') {
+        document.body.classList.add('unlocked');
+        sessionStorage.setItem('car_est_auth', '1');
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-pass').focus();
+      }
+    }
+    // auto unlock if already logged in this session
+    if (sessionStorage.getItem('car_est_auth') === '1') {
+      document.body.classList.add('unlocked');
+    }
+
+    function toggleCard(header) {
+      header.parentElement.classList.toggle('open');
+    }
+
+    // ========== Theme (dark / light) ==========
+    function applyTheme(t) {
+      document.body.classList.toggle('light', t === 'light');
+      const b = document.getElementById('theme-toggle');
+      if (b) b.textContent = (t === 'light') ? '🌙' : '☀️';
+    }
+    function toggleTheme() {
+      const t = document.body.classList.contains('light') ? 'dark' : 'light';
+      applyTheme(t);
+      try { localStorage.setItem('car_est_theme', t); } catch (e) {}
+    }
+    (function () {
+      let t = 'dark';
+      try { t = localStorage.getItem('car_est_theme') || 'dark'; } catch (e) {}
+      applyTheme(t);
+    })();
+
+    // ========== Init ==========
+    document.getElementById('estDate').valueAsDate = new Date();
+    autoEstNumber();
+    addRow('parts');
+    addRow('oils');
+    addRow('labor');
+    renderTerms();
+    renderSavedEstimates();
+  </script>
+</body>
+</html>
